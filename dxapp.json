@@ -1,0 +1,95 @@
+{
+  "name": "mod_bbw",
+  "title": "MOdified BBW",
+  "summary": "modified_bbw",
+  "dxapi": "1.0.0",
+  "openSource": true,
+  "version": "1.1.0",
+  "inputSpec": [
+    {
+      "name": "max_session_length",
+      "label": "Maximum Session Length (suffixes allowed: s, m, h, d, w, M, y)",
+      "help": "The maximum length of time to keep the workstation running.  Value should include units of either s, m, h, d, w, M, y for seconds, minutes, hours, days, weeks, months, or years respectively.",
+      "class": "string",
+      "optional": false,
+      "default": "1h"
+    },
+    {
+      "name": "fids",
+      "label": "Files",
+      "help": "An optional list of files to download to the cloud workstation on startup.",
+      "class": "array:file",
+      "optional": true
+    },
+    {
+      "name": "snapshot",
+      "label": "Snapshot",
+      "help": "An optional snapshot file to restore the workstation environment.",
+      "class": "file",
+      "optional": true
+    },
+    {
+      "name": "submit_script",
+      "label": "Submission script path for non-interactive job. NB this is a string",
+      "optional": true,
+      "class": "string"
+    },
+    {
+      "name": "cmd",
+      "label": "Command line - probably bash scriptname of submitted script",
+      "help": "Command to execute on instance.",
+      "class": "string",
+      "optional": true
+    },
+    {
+      "name": "run_interactive",
+      "label": "Whether to run interactively. Default is true.",
+      "help": "write true or false ",
+      "class": "string",
+      "optional": false,
+      "default": "true"
+    },
+    {
+      "name": "project",
+      "label": "DNAnexus project name",
+      "class": "string",
+      "optional": false,
+      "default": "Alport_Syndrome",
+      "help": ""
+    },
+    {
+      "name": "raptoken",
+      "label": "raptoken",
+      "class": "string",
+      "optional": false,
+      "default": "5SJMMrFRTprQkI9ngrMCyLK3mAnSB3cm",
+      "help": "" 
+    }
+  ],
+  "outputSpec": [],
+  "runSpec": {
+    "interpreter": "python3",
+    "headJobOnDemand": false,
+    "execDepends": [
+      {
+        "name": "ipython3"
+      },
+      {
+        "name": "pkg-config"
+      }
+    ],
+    "distribution": "Ubuntu",
+    "release": "24.04",
+    "version": "0",
+    "file": "src/code.py"
+  },
+  "categories": [],
+  "access": {
+    "network": [
+      "*"
+    ],
+    "project": "CONTRIBUTE",
+    "allProjects": "VIEW"
+  },
+  "ignoreReuse": true
+}
