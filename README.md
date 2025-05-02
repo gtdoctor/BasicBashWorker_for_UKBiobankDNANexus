@@ -110,7 +110,7 @@ To close, type "sudo shutdown" or some combination of ctrl-x and ctrl-d
 
 Timeout defaults to 12h. 
 
-*To view/stream dxfuse style files ("streaming mode"), type e.g.* 
+**To view/stream dxfuse style files ("streaming mode"), type e.g.** 
 ```
 PROJECT=Projectname
 ls project/$PROJECT/
