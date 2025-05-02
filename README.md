@@ -31,7 +31,7 @@ cd basicbashworker/
 dx build -d $PROJECT:/bbw
 
 # Optional to have  htslib and bcftools precompiled
-dx upload snapshot/bbw_htslib --path "$PROJECT/bbw_htslib"
+dx upload snapshot/bbw_htslib --path "$PROJECT:/bbw_htslib"
 ```
 
 ## Run interactively:
@@ -123,4 +123,6 @@ To add new programmes:
 If you want to have them 'preloaded', you can either update the basicbashworker app, or create a snapshot. 
 - For simple binaries with no dependencies, add the compiled programme with correct permission to basicbashworker/usr/bin/ folder; and then recompile the applet with "dx build"
 - Alternatively, upload the binary to your DNANexus platform stoarge and modify the bash_update.sh to download it to the worker on startup, and then recompile the applet.  
--For more complex binaries with dependenceis, the worker has internet access, so you can install whatever you like and then use the [dx-snapshot utility](https://documentation.dnanexus.com/developer/cloud-workstation) to save a new snapshot. You will not have to recompile the basicbashworker to use the new snapshot, just update the command used when starting it up.  
+-For more complex binaries with dependenceis, the worker has internet access, so you can install whatever you like and then use the [dx-snapshot utility](https://documentation.dnanexus.com/developer/cloud-workstation) to save a new snapshot. You will not have to recompile the basicbashworker to use the new snapshot, just update the command used when starting it up.
+
+For other useful flags for dx run e.g. worker instance, priority etc, see https://documentation.dnanexus.com/user/helpstrings-of-sdk-command-line-utilities
