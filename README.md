@@ -28,7 +28,7 @@ git clone https://github.com/gtdoctor/BasicBashWorker_for_UKBiobankDNANexus.git 
 ```{sh}
 PROJECT="Projectname" #your DNA Nexus platform project name
 cd basicbashworker/
-dx build -d $PROJECT:/bbw
+dx build -fd $PROJECT:/bbw
 
 # Optional to have  htslib and bcftools precompiled
 dx upload snapshot/bbw_htslib --path "$PROJECT:/bbw_htslib"
@@ -74,12 +74,14 @@ dx run "$PROJECT:/bbw" \
 To test submit mode, use this on your local commandline. 
 
 ```
+#from within basicbashworker local directory
 SCRIPTNAME="testscript.txt"
 PROJECT="Projectname" 
 CMD="bash $SCRIPTNAME"
 
+
 dx mkdir ${PROJECT}:/Test_bbw
-dx upload basicbashworker/test/$SCRIPTNAME --path ${PROJECT}:/Test_bbw/
+dx upload test/* --path ${PROJECT}:/Test_bbw/
 
 dx run "$PROJECT:/bbw" \
 -iraptoken=$raptoken \
@@ -90,7 +92,7 @@ dx run "$PROJECT:/bbw" \
 -icmd="$CMD" \
 -y
 ```
-If you want to watch the log as it is generated (without sshing), add the --watch flag to the dx run command above; or 
+If you want to watch the log as it is generated (without sshing), add the --watch flag to the dx run command above.
 
 
 ## Optional:
