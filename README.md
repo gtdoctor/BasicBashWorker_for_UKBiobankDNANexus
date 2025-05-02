@@ -21,6 +21,10 @@ The worker has full Ubuntu, R and python functionality. Use the versions of othe
 
 ## Installation
 Clone the folders to your local machine.
+```
+git clone https://github.com/gtdoctor/BasicBashWorker_for_UKBiobankDNANexus.git basicbashworker
+```
+
 ```{sh}
 PROJECT="Projectname" #your DNA Nexus platform project name
 cd basicbashworker/
