@@ -1,0 +1,19 @@
+#!/bin/sh
+# This should print the content of your "PROJECT" homedir in two ways, using the dx ls command, and by streaming
+# the output should be saved to "$PROJECT:/Test_bbw/test_bbw_out.txt"
+
+echo "Testing standard dx ls, upload, download"
+dx download $PROJECT:/Test_bbw/emptyfile.txt
+
+if [-f emptyfile.txt]; then
+  echo "dx download working"
+  echo "testing dx ls" >> emptyfile.txt
+  dx ls >> emptyfile.txt ;
+  echo "testing streaming" >> emptyfile.txt
+  ls project/$PROJECT/ >> emptyfile.txt
+else
+  echo "dx download not working"
+fi
+cat emtyfile.txt > fullfile.txt
+
+dx upload fullfile.txt --path $PROJECT:/Test_bbw/fullfile.txt

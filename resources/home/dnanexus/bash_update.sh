@@ -9,6 +9,7 @@ echo "Name of submission script: $submit_script"
 echo "Input command: $cmd "
 
 #mount dxfuse
+export PROJECT=$project
 mkdir /home/dnanexus/project
 dxfuse /home/dnanexus/project $project
 export DXFUSE="/home/dnanexus/project/$project"
@@ -36,7 +37,7 @@ export LC_ALL=C.UTF-8
 
 echo "testing: dx pwd in bashstartupscript"
 dx pwd
-dx download Gdoc/scripts/startupscript 
+# could add a dx download file/script/binary here 
 
 echo "downloading submit script"
 echo "the location where the script should be downloaded to is": 
