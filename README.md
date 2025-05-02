@@ -90,9 +90,12 @@ dx run "$PROJECT:/bbw" \
 -icmd="$CMD" \
 -y
 ```
+If you want to watch the log as it is generated (without sshing), add the --watch flag to the dx run command above; or 
+
 
 ## Optional:
-To load files onto worker
+To load files onto worker. include in the loading command
+
 ```
 -ifids="$PROJECT:/path/to/file1" \
 -fids=file2  # etc 
@@ -100,7 +103,6 @@ To load files onto worker
 
 To load htslib and bcftools
 ```
-#include in the loading command
 -isnaphsot="$PROJECT:/bbw_htslib"
 ```
 
