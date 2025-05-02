@@ -1,5 +1,5 @@
 {
-  "name": "mod_bbw",
+  "name": "basicbashworker",
   "title": "Basic Bash Worker",
   "summary": "Modified workspace app to allow ssh, dx upload/download, dxfuse paths, and snapshots. Executible binaries can be added to the mod_bbw/resources/usr/bin/ folder",
   "dxapi": "1.0.0",
