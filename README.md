@@ -13,9 +13,9 @@ The worker has full Ubuntu, R and python functionality. Use the versions of othe
 - One  time set up of dx [ssh_config](https://documentation.dnanexus.com/developer/apps/execution-environment/connecting-to-jobs#setting-up-your-environment-for-ssh-access)
 - A dnanexus API token ($raptoken) 
 
-## Important disclaimer
+## Important disclaimers
 - This package does not integrate well with the DNANexus Job "State" flags. Specifically, a submit job  be marked as "Done" even if the script has failed internally for some reason. Failures because of external factors (e.g. being kicked off a DNANexus worker) will be correctly logged.
-
+- This is a Frankenstein package that works well despite a bunch of warnings and error messages.  I am sure a competent coder would be able to tidy up redundancies and make it smoother. Please contact me if you want to!
 - The user must explicitly include a "dx upload" command for any output file that they would like to be saved to their platform; unlike the swiss-army-knife, no files are automatically uploaded to the platform at the end of the job. (This is intentional to allow uploading of outputs as they complete which means that work done on a low-priority instance will not be lost if the user is kicked off.)
 
 
@@ -52,6 +52,7 @@ Once on the command line on the worker, to allow dx upload/download, type
 ```
 source .bashrc
 ```
+Note that there will be an error message before saying Selected project ...
 
 
 ## Run non-interactively (submit mode) : 
