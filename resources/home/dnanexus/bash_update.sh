@@ -9,6 +9,7 @@ echo "Name of submission script: $submit_script"
 echo "Input command: $cmd "
 
 #mount dxfuse
+export PROJECT=$project
 mkdir /home/dnanexus/project
 dxfuse /home/dnanexus/project $project
 export DXFUSE="/home/dnanexus/project/$project"
