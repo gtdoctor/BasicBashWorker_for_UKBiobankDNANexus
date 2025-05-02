@@ -5,7 +5,7 @@
 echo "Testing standard dx ls, upload, download"
 dx download $PROJECT:/Test_bbw/emptyfile.txt
 
-if [-f emptyfile.txt]; then
+if [ -f emptyfile.txt ]; then
   echo "dx download working"
   echo "testing dx ls" >> emptyfile.txt
   dx ls >> emptyfile.txt ;
@@ -14,6 +14,6 @@ if [-f emptyfile.txt]; then
 else
   echo "dx download not working"
 fi
-cat emtyfile.txt > fullfile.txt
+cat emptyfile.txt > fullfile.txt
 
 dx upload fullfile.txt --path $PROJECT:/Test_bbw/fullfile.txt
