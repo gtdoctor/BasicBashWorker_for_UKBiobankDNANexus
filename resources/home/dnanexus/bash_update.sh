@@ -49,30 +49,6 @@ echo "contents of $filename:"
 cat $filename
 
 
-set +e  # Allow failure
-set -x
-eval "$cmd"
-exit_code=$?
-set +x
-set -e  # Re-enable strict failure mode
-
-if [[ $exit_code -ne 0 ]]; then
-    echo "Warning: Command failed with exit code $exit_code"
-fi
-
-# if [[ "$run_interactive" == "true" ]]; then
-#     while true; do
-#         now=$(date +'%s')
-#         timeout=$(date -d "$(cat /home/dnanexus/.dx.timeout)" +'%s')
-#         if (( now > timeout )); then
-#             echo "Session timed out (interactive). Shutting down."
-#             sudo shutdown now
-#             break
-#         fi
-#         sleep 30
-#     done
-# fi
-
 # allow for timeout
 timeout_loop() {
     while true; do
@@ -90,8 +66,25 @@ timeout_loop() {
     done
 }
 
+
+set -x
+
 if [[ "$run_interactive" == "true" ]]; then
-    timeout_loop  # block
+    timeout_loop 
 else
-    timeout_loop &  # run in background, script continues
+    timeout_loop & 
 fi
+
+set +e  # Allow failure
+
+eval "$cmd"
+exit_code=$?
+set +x
+set -e  # Re-enable strict failure mode
+
+
+if [[ $exit_code -ne 0 ]]; then
+    echo "Warning: Command failed with exit code $exit_code"
+fi
+exit 0
+
