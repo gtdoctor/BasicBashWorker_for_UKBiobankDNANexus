@@ -4,24 +4,17 @@
 #set -e -x -o pipefail
 
 echo "Checking variable availability to bash script"
-echo "Max session length: '$max_session_length'"
-echo "Name of submission script: '$submit_script'"
-echo "Input command: '$cmd'"
 echo "Project: $project"
-
-
-
-# echo "location of dxfuse"
-# echo "$(which dxfuse)"
+echo "Name of submission script: $submit_script"
+echo "Input command: $cmd "
 
 #mount dxfuse
 mkdir /home/dnanexus/project
-dxfuse /home/dnanexus/project "Alport_Syndrome"
-export DXFUSE="/home/dnanexus/project/Alport_Syndrome"
+dxfuse /home/dnanexus/project $project
+export DXFUSE="/home/dnanexus/project/$project"
 echo "Dxfuse directory root $DXFUSE"
-# ls  $DXFUSE | head 
 
-echo "restting workspace directory"
+echo "Resetting workspace directory"
 
 unset DX_WORKSPACE_ID
 dx cd $DX_PROJECT_CONTEXT_ID:
@@ -45,15 +38,9 @@ echo "testing: dx pwd in bashstartupscript"
 dx pwd
 dx download Gdoc/scripts/startupscript 
 
-# echo "testing dxfuse in bashstartupscript"
-# export DRAGENPATH="project/Alport_Syndrome/Bulk/DRAGEN WGS/DRAGEN population level WGS variants, pVCF format [500k release]/chr11"
-
-#echo "zcat view"
-#zcat  "${DRAGENPATH}/ukb24310_c11_b6753_v1.vcf.gz" | head -n1
-
 echo "downloading submit script"
 echo "the location where the script should be downloaded to is": 
-echo pwd
+echo $(pwd)
 dx download $submit_script
 filename=$(basename "$submit_script")
 echo "$filename"
@@ -72,9 +59,38 @@ if [[ $exit_code -ne 0 ]]; then
     echo "Warning: Command failed with exit code $exit_code"
 fi
 
+# if [[ "$run_interactive" == "true" ]]; then
+#     while true; do
+#         now=$(date +'%s')
+#         timeout=$(date -d "$(cat /home/dnanexus/.dx.timeout)" +'%s')
+#         if (( now > timeout )); then
+#             echo "Session timed out (interactive). Shutting down."
+#             sudo shutdown now
+#             break
+#         fi
+#         sleep 30
+#     done
+# fi
+
+# allow for timeout
+timeout_loop() {
+    while true; do
+        now=$(date +'%s')
+        #adjust datefile format
+        raw=$(cat /home/dnanexus/.dx.timeout)
+        formatted=$(echo "$raw" | awk '{printf "%s-%s-%s %s:%s:%s\n", $1,$2,$3,$4,$5,$6}')
+        timeout=$(date -d "$formatted" +'%s')
+        if (( now > timeout )); then
+            echo "Session timed out. Shutting down."
+            sudo shutdown now
+            break
+        fi
+        sleep 30
+    done
+}
+
 if [[ "$run_interactive" == "true" ]]; then
-    tail -f /dev/null
+    timeout_loop  # block
+else
+    timeout_loop &  # run in background, script continues
 fi
-
-
-

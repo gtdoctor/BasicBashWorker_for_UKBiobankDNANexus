@@ -1,20 +1,20 @@
 {
   "name": "mod_bbw",
-  "title": "MOdified BBW",
-  "summary": "modified_bbw",
+  "title": "Basic Bash Worker",
+  "summary": "Modified workspace app to allow ssh, dx upload/download, dxfuse paths, and snapshots. Executible binaries can be added to the mod_bbw/resources/usr/bin/ folder",
   "dxapi": "1.0.0",
   "openSource": true,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "inputSpec": [
-    {
-      "name": "max_session_length",
-      "label": "Maximum Session Length (suffixes allowed: s, m, h, d, w, M, y)",
-      "help": "The maximum length of time to keep the workstation running.  Value should include units of either s, m, h, d, w, M, y for seconds, minutes, hours, days, weeks, months, or years respectively.",
-      "class": "string",
-      "optional": false,
-      "default": "1h"
-    },
-    {
+  {
+    "name": "max_session_length",
+    "label": "Maximum Session Length (suffixes allowed: s, m, h, d, w, M, y)",
+    "help": "The maximum length of time to keep the workstation running.  Value should include units of either s, m, h, d, w, M, y for seconds, minutes, hours, days, weeks, months, or years respectively.",
+    "class": "string",
+    "optional": false,
+    "default": "12h"
+  },
+     {
       "name": "fids",
       "label": "Files",
       "help": "An optional list of files to download to the cloud workstation on startup.",
@@ -30,7 +30,7 @@
     },
     {
       "name": "submit_script",
-      "label": "Submission script path for non-interactive job. NB this is a string",
+      "label": "Submission script path for non-interactive job. NB this is a string. NB in dx download format, full path safest",
       "optional": true,
       "class": "string"
     },
@@ -54,16 +54,14 @@
       "label": "DNAnexus project name",
       "class": "string",
       "optional": false,
-      "default": "Alport_Syndrome",
-      "help": ""
+      "help": "project name, which must be the same as the current project selected in dx select"
     },
     {
       "name": "raptoken",
       "label": "raptoken",
       "class": "string",
       "optional": false,
-      "default": "5SJMMrFRTprQkI9ngrMCyLK3mAnSB3cm",
-      "help": "" 
+      "help": "DX API token required. Advise to save as env variable $raptoken, then include -iraptoken=$raptoken" 
     }
   ],
   "outputSpec": [],
