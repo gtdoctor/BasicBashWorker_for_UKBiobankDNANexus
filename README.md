@@ -14,8 +14,8 @@ The worker has full Ubuntu, R and python functionality. Use the versions of othe
 - A dnanexus API token ($raptoken) 
 
 ## Important disclaimers
-- This package does not integrate well with the DNANexus Job "State" flags. Specifically, a submit job  be marked as "Done" even if the script has failed internally for some reason. Failures because of external factors (e.g. being kicked off a DNANexus worker) will be correctly logged.
-- This is a Frankenstein package that works well despite a bunch of warnings and error messages.  I am sure a competent coder would be able to tidy up redundancies and make it smoother. Please contact me if you want to!
+- This applet does not integrate well with the DNANexus Job "State" flags. Specifically, a submit job  be marked as "Done" even if the script has failed internally for some reason. Failures because of external factors (e.g. being kicked off a DNANexus worker) will be correctly logged.
+- This is a Frankenstein applet that works well despite a bunch of warnings and error messages.  I am sure a competent coder would be able to tidy up redundancies and make it smoother. Please contact me if you want to!
 - The user must explicitly include a "dx upload" command for any output file that they would like to be saved to their platform; unlike the swiss-army-knife, no files are automatically uploaded to the platform at the end of the job. (This is intentional to allow uploading of outputs as they complete which means that work done on a low-priority instance will not be lost if the user is kicked off.)
 
 
@@ -71,7 +71,7 @@ dx run "$PROJECT:/bbw" \
 -y
 ```
 
-To test submit mode, use this on your local commandline. 
+To test submit mode, use this on your local commandline. The output should be a file in your UKB plaftform, $PROJECT:/Test_bbw/fullfile.txt that lists the content of your project root directory twice.   
 
 ```
 #from within basicbashworker local directory
