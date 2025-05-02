@@ -1,16 +1,42 @@
-# Basic Bash Worker 
+# BasicBashWorker_for_UKBiobankDNANexus
 Version: 1.1.2
 
-A modified dnanexus workspace app to allow interactive sessions via ssh, dx upload/download, dxfuse paths, and snapshots. Executible binaries can be added to the mod_bbw/resources/usr/bin/ folder. 
+Explore UKBiobank data on a DNANexus cloud worker, as if you were working on your own bash command-line. Interactive mode allows you to develop scripts which will work as intended as a submit job.
+
+The BasicBashWorker is modified version of the dnanexus [cloud_workstation](https://documentation.dnanexus.com/developer/cloud-workstation) app, to allow interactive sessions via ssh, dx upload/download, the use of dxfuse paths, and the use of environmental snapshots. It can also be used as an alternative to the [swiss-army-knife](https://dnanexus.gitbook.io/uk-biobank-rap/working-on-the-research-analysis-platform/running-analysis-jobs/tools-library) to allow easier code improvement and data exploration.  
+
+The worker has full Ubuntu, R and python functionality. Use the versions of other software that YOU choose. The build includes plink and [plink2](https://www.cog-genomics.org/plink/2.0/) (29 Jan 2025 versions) bundled.
+
+## Requirements
+- Access to a project hosted on DNANexus! I use this for UK Biobank RAP data, it may be usable in other cases. 
+- Prior installation of dx-toolkit https://github.com/dnanexus/dx-toolkit (and see https://documentation.dnanexus.com/downloads#DNAnexus-Platform-SDK)
+- One  time set up of dx [ssh_config](https://documentation.dnanexus.com/developer/apps/execution-environment/connecting-to-jobs#setting-up-your-environment-for-ssh-access)
+- A dnanexus API token ($raptoken) 
+
+## Important disclaimer
+- This package does not integrate well with the DNANexus Job "State" flags. Specifically, a submit job  be marked as "Done" even if the script has failed internally for some reason. Failures because of external factors (e.g. being kicked off a DNANexus worker) will be correctly logged.
+
+- The user must explicitly include a "dx upload" command for any output file that they would like to be saved to their platform; unlike the swiss-army-knife, no files are automatically uploaded to the platform at the end of the job. (This is intentional to allow uploading of outputs as they complete which means that work done on a low-priority instance will not be lost if the user is kicked off.)
 
 
-It requires an API token $raptoken 
+## Installation
+Clone the folders to your local machine.
+```{sh}
+PROJECT="Projectname" #your DNA Nexus platform project name
+cd basicbashworker/
+dx build -d $PROJECT:/bbw
+
+# Optional to have  htslib and bcftools precompiled
+dx upload snapshot/bbw_htslib --path "$PROJECT/bbw_htslib"
+```
 
 ## Run interactively:
 
 ```
 PROJECT="Projectname"
-dx run "$PROJECT:/mod_bbw" \
+dx select $PROJECT
+
+dx run "$PROJECT:/bbw" \
 -iraptoken=$raptoken \
 -imax_session_length=12h \
 -irun_interactive=true \
@@ -24,13 +50,13 @@ source .bashrc
 ```
 
 
-## Run non-interactively: 
+## Run non-interactively (submit mode) : 
 ```
 SCRIPTNAME="script.sh"
 PROJECT="Projectname"
 CMD="bash $SCRIPTNAME"
 
-dx run "$PROJECT:/mod_bbw" \
+dx run "$PROJECT:/bbw" \
 -iraptoken=$raptoken \
 -imax_session_length=12h \
 -irun_interactive=false \
@@ -38,32 +64,59 @@ dx run "$PROJECT:/mod_bbw" \
 -isubmit_script="${PROJECT}:/path/to/$SCRIPTNAME" \
 -icmd="$CMD" \
 -y
+```
 
+To test submit mode, use this on your local commandline. 
+
+```
+SCRIPTNAME="testscript.txt"
+PROJECT="Projectname" 
+CMD="bash $SCRIPTNAME"
+
+dx mkdir ${PROJECT}:/Test_bbw
+dx upload basicbashworker/test/$SCRIPTNAME --path ${PROJECT}:/Test_bbw/
+
+dx run "$PROJECT:/bbw" \
+-iraptoken=$raptoken \
+-imax_session_length=10m \
+-irun_interactive=false \
+-iproject="$PROJECT" \
+-isubmit_script="${PROJECT}:/Test_bbw/$SCRIPTNAME" \
+-icmd="$CMD" \
+-y
+```
 
 ## Optional:
 To load files onto worker
-
 ```
--ifids="Project/path/to/file1" \
+-ifids="$PROJECT:/path/to/file1" \
 -fids=file2  # etc 
 ```
 
 To load htslib and bcftools
 ```
--isnaphsot="Alport_Syndrome:/bbw_htslib_plink.2"
+#include in the loading command
+-isnaphsot="$PROJECT:/bbw_htslib"
 ```
 
 ## Comments
 `--ssh` can be used for non-interactive sessions, to see what's going on. 
-
 In ssh : A byobu terminal is opened - to see what's happening with submit scipt, press f4 (and then again). or press f2 to create a new terminal
-
 To close, type "sudo shutdown" or some combination of ctrl-x and ctrl-d
 
-Timeout defaults to 12h now. 
+Timeout defaults to 12h. 
 
-To view/stream dxfuse style files ("streaming mode"), type e.g. 
+*To view/stream dxfuse style files ("streaming mode"), type e.g.* 
 ```
 PROJECT=Projectname
-less project/$PROJECT/pathtofile/file.txt
+ls project/$PROJECT/
+less project/$PROJECT/pathtofile/file.txt  #note this is different to the usual dnanexus /mnt/project/pathtofile.txt
 ```
+
+Output must be explicltly uploaded to the project directory or will be lost when the worker terminates.
+
+To add new programmes:
+If you want to have them 'preloaded', you can either update the basicbashworker app, or create a snapshot. 
+- For simple binaries with no dependencies, add the compiled programme with correct permission to basicbashworker/usr/bin/ folder; and then recompile the applet with "dx build"
+- Alternatively, upload the binary to your DNANexus platform stoarge and modify the bash_update.sh to download it to the worker on startup, and then recompile the applet.  
+-For more complex binaries with dependenceis, the worker has internet access, so you can install whatever you like and then use the [dx-snapshot utility](https://documentation.dnanexus.com/developer/cloud-workstation) to save a new snapshot. You will not have to recompile the basicbashworker to use the new snapshot, just update the command used when starting it up.  
