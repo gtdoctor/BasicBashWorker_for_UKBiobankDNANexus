@@ -68,14 +68,12 @@ timeout_loop() {
 
 
 set -x
+set +e  # Allow failure
 
-if [[ "$run_interactive" == "true" ]]; then
-    timeout_loop 
-else
+if [[ "$run_interactive" == "false" ]]; then
     timeout_loop & 
 fi
 
-set +e  # Allow failure
 
 eval "$cmd"
 exit_code=$?
@@ -83,7 +81,12 @@ set +x
 set -e  # Re-enable strict failure mode
 
 
-if [[ $exit_code -ne 0 ]]; then
-    echo "Warning: Command failed with exit code $exit_code"
+#if [[ $exit_code -ne 0 ]]; then
+#    echo "Warning: Command failed with exit code $exit_code"
+#fi
+
+if [[ "$run_interactive" == "true" ]]; then
+    timeout_loop 
 fi
+
 sudo shutdown now
