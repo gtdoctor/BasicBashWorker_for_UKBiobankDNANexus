@@ -81,9 +81,9 @@ set +x
 set -e  # Re-enable strict failure mode
 
 
-#if [[ $exit_code -ne 0 ]]; then
-#    echo "Warning: Command failed with exit code $exit_code"
-#fi
+if [[ $exit_code -ne 0 ]]; then
+    echo "Warning: Command failed with exit code $exit_code"
+fi
 
 if [[ "$run_interactive" == "true" ]]; then
     timeout_loop 
