@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## this is called by the code.py from modified workstation
-#set -e -x -o pipefail
+set -e -x -o pipefail
 
 echo "Checking variable availability to bash script"
 echo "Project: $project"
