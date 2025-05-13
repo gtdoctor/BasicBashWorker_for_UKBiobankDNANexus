@@ -66,9 +66,9 @@ timeout_loop() {
     done
 }
 
+set +e
+set -o pipefail
 
-set -x
-set +e  # Allow failure
 
 if [[ "$run_interactive" == "false" ]]; then
     timeout_loop & 
