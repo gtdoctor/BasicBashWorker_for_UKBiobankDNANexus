@@ -60,7 +60,6 @@ timeout_loop() {
         if (( now > timeout )); then
             echo "Session timed out. Shutting down."
             sudo shutdown now
-            break
         fi
         sleep 30
     done
@@ -69,24 +68,29 @@ timeout_loop() {
 set +e
 set -o pipefail
 
-
-if [[ "$run_interactive" == "false" ]]; then
-    timeout_loop & 
-fi
-
-
+timeout_loop & 
 eval "$cmd"
 exit_code=$?
 set +x
-set -e  # Re-enable strict failure mode
 
 
-if [[ $exit_code -ne 0 ]]; then
-    echo "Warning: Command failed with exit code $exit_code"
+if [[ "$run_interactive" == "false" ]]; then
+    eval "$cmd"
+    exit_code=$?
+    if [[ $exit_code -ne 0 ]]; then
+        echo "Warning: Supplied command/code failed with exit code $exit_code"
+            else
+        echo "Supplied command/code appears to have completed."
+    fi
+    sleep 20 && sudo shutdown now # give time for error logging? 
 fi
 
 if [[ "$run_interactive" == "true" ]]; then
-    timeout_loop 
+    wait
 fi
 
-sudo shutdown now
+
+
+# if cmd=true and ri=true   - timer starts, command runs. once timer completes, shutdown ensues. regardless of whether command fails or completes or is incomplete, shutdown will not occur until timer completes 
+# if cmd=true and ri=false - timer starts, cmd is runs. if command completes before timer, then shutdown. if command doesn't complete, shutdown still occurs from timer. 
+# if no command and ri=true 
