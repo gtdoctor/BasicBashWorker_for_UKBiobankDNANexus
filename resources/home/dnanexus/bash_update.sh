@@ -74,9 +74,9 @@ exit_code=$?
 set +x
 
 
-if [[ "$run_interactive" == "false" ]]; then
-    eval "$cmd"
-    exit_code=$?
+if [[ "$run_interactive" == "true" ]]; then
+    wait
+else
     if [[ $exit_code -ne 0 ]]; then
         echo "Warning: Supplied command/code failed with exit code $exit_code"
             else
@@ -85,12 +85,11 @@ if [[ "$run_interactive" == "false" ]]; then
     sleep 20 && sudo shutdown now # give time for error logging? 
 fi
 
-if [[ "$run_interactive" == "true" ]]; then
-    wait
-fi
-
+echo "no command given, shutting down" && wait 10 && 
+sudo shutdown now
 
 
 # if cmd=true and ri=true   - timer starts, command runs. once timer completes, shutdown ensues. regardless of whether command fails or completes or is incomplete, shutdown will not occur until timer completes 
 # if cmd=true and ri=false - timer starts, cmd is runs. if command completes before timer, then shutdown. if command doesn't complete, shutdown still occurs from timer. 
-# if no command and ri=true 
+# if no command and ri=true = timer starts, and process waits for it to finish then terminate
+# if no command and ri=false = (this shouldn't happen; but) 
