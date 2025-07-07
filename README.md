@@ -117,7 +117,7 @@ To load htslib and bcftools
 ## Comments
 `--ssh` can be used for non-interactive sessions, to see what's going on. 
 In ssh : A byobu terminal is opened - to see what's happening with submit scipt, press f4 (and then again). or press f2 to create a new terminal
-To close, type "sudo shutdown" or some combination of ctrl-x and ctrl-d
+To close, type "sudo shutdown now" or some combination of ctrl-x and ctrl-d
 
 Timeout defaults to 12h. 
 
