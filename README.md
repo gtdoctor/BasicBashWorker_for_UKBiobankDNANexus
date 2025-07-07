@@ -1,5 +1,5 @@
 # BasicBashWorker_for_UKBiobankDNANexus
-Version: 1.2
+Version: 1.2.1
 
 Explore UKBiobank data on a DNANexus cloud worker, as if you were working on your own bash command-line. Interactive mode allows you to develop scripts which will work as intended as a submit job.
 
@@ -22,13 +22,17 @@ The worker has full Ubuntu, R and python functionality. Use the versions of othe
 ## Installation
 Clone the folders to your local machine.
 ```
-git clone https://github.com/gtdoctor/BasicBashWorker_for_UKBiobankDNANexus.git basicbashworker
+# choose  directory and name
+LDIR=basicbashworker
+git clone https://github.com/gtdoctor/BasicBashWorker_for_UKBiobankDNANexus.git $DIR
 ```
 
 ```{sh}
 PROJECT="Projectname" #your DNA Nexus platform project name
-cd basicbashworker/
-dx build -fd $PROJECT:/bbw
+DDIR="$PROJECT:/bbw" # choose a directry and name on DNAnexus platform
+
+cd $DIR/
+dx build -fd "$DDIR"
 
 # Optional to have  htslib and bcftools precompiled
 dx upload snapshot/bbw_htslib --path "$PROJECT:/bbw_htslib"
@@ -48,13 +52,6 @@ dx run "$PROJECT:/bbw" \
 --ssh -y
 ```
 
-Once on the command line on the worker, to allow dx upload/download, type 
-```
-source .bashrc
-```
-Note that there will be an error message before saying Selected project ...
-
-
 ## Run non-interactively (submit mode) : 
 ```
 SCRIPTNAME="script.sh"
@@ -70,6 +67,15 @@ dx run "$PROJECT:/bbw" \
 -icmd="$CMD" \
 -y
 ```
+You can ignore the following error messages:
+```
+Error while writing configuration data: PermissionError: [Errno 1] Operation not permitted:                                                                                                                      
+'/home/dnanexus/.dnanexus_config'                                                                                                                                                                                
+Error while writing configuration data: PermissionError: [Errno 13] Permission denied:                                                                                                                           
+'/home/dnanexus/.dnanexus_config/sessions/4900'                                                                                                                                                                  
+PermissionError: [Errno 13] Permission denied: '/home/dnanexus/.dnanexus_config/unsetenv'
+```
+
 
 To test submit mode, use this on your local commandline. The output should be a file in your UKB plaftform, $PROJECT:/Test_bbw/fullfile.txt that lists the content of your project root directory twice.   
 
