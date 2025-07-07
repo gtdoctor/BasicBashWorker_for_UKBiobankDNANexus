@@ -1,5 +1,5 @@
 source ~/environment
-source ~/.bashrc
+#source ~/.bashrc
 
 export DX_RUN_DETACH=1
 
@@ -24,4 +24,4 @@ if [[ -z $DX_SNAPSHOT_FILE ]]; then
     export DX_SNAPSHOT_FILE
 fi
 
-source ~/.bashrc
+sleep 10 && source ~/.bashrc
