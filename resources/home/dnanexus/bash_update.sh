@@ -60,7 +60,7 @@ timeout_loop() {
         timeout=$(date -d "$formatted" +'%s')
         if (( now > timeout )); then
             echo "Session timed out. Shutting down."
-            sleep 10 && sudo shutdown now
+            sleep 10 && kill -- -$(ps -o pgid= $(ps -o ppid= $$))
         fi
         sleep 30
     done
@@ -86,11 +86,11 @@ else
             else
         echo "Supplied command/code appears to have completed."
     fi
-    sleep 10 && sudo shutdown now # give time for error logging? 
+    sleep 10 && kill -- -$(ps -o pgid= $(ps -o ppid= $$)) # give time for error logging? 
 fi
 
 echo "shutting down" 
-sleep 10 && sudo shutdown now
+sleep 10 && kill -- -$(ps -o pgid= $(ps -o ppid= $$))
 
 
 # if cmd=true and ri=true   - timer starts, command runs. once timer completes, shutdown ensues. regardless of whether command fails or completes or is incomplete, shutdown will not occur until timer completes 
