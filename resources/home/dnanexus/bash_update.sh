@@ -61,8 +61,10 @@ timeout_loop() {
         if (( now > timeout )); then
             echo "Session timed out. Shutting down."
             sleep 10 && kill -- -$(ps -o pgid= $(ps -o ppid= $$))
+        else
+            echo "time-now variable $now , timeout variable $timeout" 
+            sleep 60
         fi
-        sleep 30
     done
 }
 
