@@ -4,7 +4,7 @@
   "summary": "Modified workspace app to allow ssh, dx upload/download, dxfuse paths, and snapshots. Executible binaries can be added to the mod_bbw/resources/usr/bin/ folder",
   "dxapi": "1.0.0",
   "openSource": true,
-  "version": "1.1.1",
+  "version": "1.2.0",
   "inputSpec": [
   {
     "name": "max_session_length",
@@ -12,7 +12,7 @@
     "help": "The maximum length of time to keep the workstation running.  Value should include units of either s, m, h, d, w, M, y for seconds, minutes, hours, days, weeks, months, or years respectively.",
     "class": "string",
     "optional": false,
-    "default": "12h"
+    "default": "3h"
   },
      {
       "name": "fids",

@@ -23,12 +23,12 @@ dx cd $DX_PROJECT_CONTEXT_ID:
 cat << EOL >> ~/.bashrc
 unset DX_WORKSPACE_ID
 dx cd $DX_PROJECT_CONTEXT_ID:
-sudo chown -R dnanexus:dnanexus /home/dnanexus/.dnanexus_config
-sudo chmod -R u+w /home/dnanexus/.dnanexus_config
-source ~/.dnanexus_config/unsetenv
-dx clearenv
-dx login --noprojects --token $raptoken
-dx select $project
+# sudo chown -R dnanexus:dnanexus /home/dnanexus/.dnanexus_config
+# sudo chmod -R u+w /home/dnanexus/.dnanexus_config
+# source ~/.dnanexus_config/unsetenv
+# dx clearenv
+# dx login --noprojects --token $raptoken
+# dx select $project
 EOL
 
 export LC_ALL=C.UTF-8
@@ -52,19 +52,22 @@ fi
 
 # allow for timeout
 timeout_loop() {
+    #adjust datefile format
+    raw=$(cat /home/dnanexus/.dx.timeout)
+    formatted=$(echo "$raw" | awk '{printf "%s-%s-%s %s:%s:%s\n", $1,$2,$3,$4,$5,$6}')
+    timeout=$(date -d "$formatted" +'%s')
     while true; do
-        now=$(date +'%s')
-        #adjust datefile format
-        raw=$(cat /home/dnanexus/.dx.timeout)
-        formatted=$(echo "$raw" | awk '{printf "%s-%s-%s %s:%s:%s\n", $1,$2,$3,$4,$5,$6}')
-        timeout=$(date -d "$formatted" +'%s')
-        if (( now > timeout )); then
+        now=$(date +%s)
+        rem=$(( timeout - now ))
+        echo "now=$now timeout=$timeout remaining=$rem"
+
+        if (( rem <= 0 )); then
             echo "Session timed out. Shutting down."
-            sleep 10 && kill -- -$(ps -o pgid= $(ps -o ppid= $$))
-        else
-            echo "time-now variable $now , timeout variable $timeout" 
-            sleep 60
+            sleep 10 
+            kill -- -$(ps -o pgid= $(ps -o ppid= $$))
+            exit 0
         fi
+        sleep 60
     done
 }
 
