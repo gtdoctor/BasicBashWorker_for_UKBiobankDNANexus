@@ -23,6 +23,8 @@ dx cd $DX_PROJECT_CONTEXT_ID:
 cat << EOL >> ~/.bashrc
 unset DX_WORKSPACE_ID
 dx cd $DX_PROJECT_CONTEXT_ID:
+
+# this does not seem necessary anymore? Aug 2025
 # sudo chown -R dnanexus:dnanexus /home/dnanexus/.dnanexus_config
 # sudo chmod -R u+w /home/dnanexus/.dnanexus_config
 # source ~/.dnanexus_config/unsetenv
