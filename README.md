@@ -13,7 +13,7 @@ The worker has full Ubuntu, R and python functionality. Use the versions of othe
 - Access to a project hosted on DNANexus! I use this for UK Biobank RAP data, it may be usable in other cases.
 - Prior installation of dx-toolkit https://github.com/dnanexus/dx-toolkit (and see https://documentation.dnanexus.com/downloads#DNAnexus-Platform-SDK)
 - One  time set up of dx [ssh_config](https://documentation.dnanexus.com/developer/apps/execution-environment/connecting-to-jobs#setting-up-your-environment-for-ssh-access)
-- A dnanexus API token ($raptoken)
+-  A [dnanexus API token](https://documentation.dnanexus.com/user/login-and-logout#generating-a-token) - this is referred to as the variable $raptoken in the scripts below) 
 
 ## Important disclaimers
 
@@ -28,14 +28,13 @@ Clone the folders to your local machine.
 ```sh
 # choose  directory and name
 LDIR=basicbashworker
-git clone https://github.com/gtdoctor/BasicBashWorker_for_UKBiobankDNANexus.git $DIR
+PROJECT="Projectname" #your DNA Nexus platform project name
+DDIR="$PROJECT:/bbw" # choose a directry and name for the applet on DNAnexus platform
+git clone https://github.com/gtdoctor/BasicBashWorker_for_UKBiobankDNANexus.git $LDIR
+cd $LDIR
 ```
 
 ```sh
-PROJECT="Projectname" #your DNA Nexus platform project name
-DDIR="$PROJECT:/bbw" # choose a directry and name on DNAnexus platform
-
-cd $DIR/
 dx build -fd "$DDIR"
 
 # Optional to have  htslib and bcftools precompiled
@@ -50,7 +49,7 @@ dx select $PROJECT
 
 dx run "$PROJECT:/bbw" \
 -iraptoken=$raptoken \
--imax_session_length=12h \
+-imax_session_length=1h \
 -irun_interactive=true \
 -iproject="$PROJECT" \
 --ssh -y
@@ -59,16 +58,28 @@ dx run "$PROJECT:/bbw" \
 ## Run non-interactively (submit mode) :
 
 ```sh
-SCRIPTNAME="script.sh"
-PROJECT="Projectname"
-CMD="bash $SCRIPTNAME"
+raptoken=YOURDNANEXUSAPITOKEN # consider saving this as an environment variable. 
+PROJECT="Projectname" # dnanedus project name
+SUBMITSCRIPT="script.sh"
+DXSCRIPTS="/dxplatformpath/to/scripts"
+CMD="bash $SUBMITSCRIPT"
+MAXLENGTH=2h # adjust as necessary 
+dx select $PROJECT
+dx mkdir $DXSCRIPTS # create a directory for bash scripts on the platform
+# check if  the $SUBMITSCRIPT exists already on the platform; if it does, delete. Then upload local version
+# this prevents duplicates of scripts with the same name, which breaks things.
+if dx ls $DXSCRIPTS/$SUBMITSCRIPT > /dev/null 2>&1 ; then  
+  dx rm $DXSCRIPTS/$SUBMITSCRIPT ; 
+fi 
+dx upload $SUBMITSCRIPT --path $DXSCRIPTS
+
 
 dx run "$PROJECT:/bbw" \
 -iraptoken=$raptoken \
--imax_session_length=12h \
+-imax_session_length=$MAXLENGTH \
 -irun_interactive=false \
 -iproject="$PROJECT" \
--isubmit_script="${PROJECT}:/path/to/$SCRIPTNAME" \
+-isubmit_script="${PROJECT}:$DXSCRIPTS/$SUBMITSCRIPT" \
 -icmd="$CMD" \
 -y
 ```
@@ -87,7 +98,7 @@ To test submit mode, use this on your local commandline. The output should be a 
 
 ```sh
 #from within basicbashworker local directory
-SCRIPTNAME="testscript.txt"
+SUBMITSCRIPT="testscript.txt"
 PROJECT="Projectname" 
 CMD="bash $SCRIPTNAME"
 
@@ -100,7 +111,7 @@ dx run "$PROJECT:/bbw" \
 -imax_session_length=10m \
 -irun_interactive=false \
 -iproject="$PROJECT" \
--isubmit_script="${PROJECT}:/Test_bbw/$SCRIPTNAME" \
+-isubmit_script="${PROJECT}:/Test_bbw/$SUBMITSCRIPT" \
 -icmd="$CMD" \
 -y
 ```
@@ -121,6 +132,21 @@ To load htslib and bcftools
 ```sh
 -isnaphsot="$PROJECT:/bbw_htslib"
 ```
+
+## Default   
+Required:  
+- iproject=<blank> the name of the project  
+- iraptoken=<blank>  supply dnanexus api token  
+- irun_interactive="true" takes "true" or "false"  
+- imax_session_length="12h"  accepts length in s,m,h,d
+
+Optional:
+- isnapshot=<blank> takes a dnanexus snapshot file location
+- isubmitscript=<blank> full dnanxus path and scriptname which will be downloaded to worker.
+- ifids=<blank>
+- icmd=<blank> typically, "bash $SUBMITSCRIPT"
+
+For other useful flags for dx run e.g. worker instance, priority etc, see https://documentation.dnanexus.com/user/helpstrings-of-sdk-command-line-utilities
 
 ## Comments
 
@@ -146,5 +172,3 @@ If you want to have them 'preloaded', you can either update the basicbashworker 
 - For simple binaries with no dependencies, add the compiled programme with correct permission to basicbashworker/usr/bin/ folder; and then recompile the applet with "dx build"
 - Alternatively, upload the binary to your DNANexus platform stoarge and modify the bash_update.sh to download it to the worker on startup, and then recompile the applet.  
 - Use a docker image for more complex programmes with dependenices. Note the Dockerfile, if built on the worker, cannot be in the $HOME directory (so use eg `/tmp/` )  and Dokerfile must include a line `ENV TMP=/tmp` .  
-
-For other useful flags for dx run e.g. worker instance, priority etc, see https://documentation.dnanexus.com/user/helpstrings-of-sdk-command-line-utilities
