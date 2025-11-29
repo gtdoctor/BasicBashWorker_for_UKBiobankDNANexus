@@ -1,6 +1,6 @@
 # BasicBashWorker_for_UKBiobankDNANexus
 
-Version: 1.2.1
+Version: 1.3
 
 Explore UKBiobank data on a DNANexus cloud worker, as if you were working on your own bash command-line. Interactive mode allows you to develop scripts which will work as intended as a submit job.
 
